@@ -15,7 +15,6 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/create")
-    @ResponseBody
     public ResponseEntity<Void> create(@RequestBody PostDto postDto) {
         postService.save(postDto);
         return ResponseEntity.ok().build();

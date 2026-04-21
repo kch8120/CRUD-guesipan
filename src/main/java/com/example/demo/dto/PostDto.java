@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "title", "content"})
+@JsonPropertyOrder({"id", "title", "contents"})
 public class PostDto {
     private Long id;
     private String title;
