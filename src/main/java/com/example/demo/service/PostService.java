@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.PostDto;
+
+import com.example.demo.dto.PostRequestDTO;
+import com.example.demo.dto.PostResponseDTO;
 import com.example.demo.entity.PostEntity;
 import com.example.demo.repository.PostRepository;
 import jakarta.transaction.Transactional;
@@ -15,36 +17,36 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
 
-    public void save(PostDto postDto) {
-        PostEntity postEntity = new PostEntity();
-        postEntity.setTitle(postDto.getTitle());
-        postEntity.setContents(postDto.getContents());
-
-        postRepository.save(postEntity);
+    public PostResponseDTO save(PostRequestDTO requestDTO) {
+        PostEntity postEntity = requestDTO.toEntity();
+        PostEntity SavedEntity = postRepository.save(postEntity);
+        return PostResponseDTO.fromEntity(SavedEntity);
     }
-    public List<PostDto> findAll() {
+    public List<PostResponseDTO> findAll() {
         return postRepository.findAll()
                 .stream()
-                .map(PostDto::fromEntity)
+                .map(PostResponseDTO::fromEntity)
                 .toList();
     }
 
-    public void update(Long id, PostDto postDto) {
+    public PostResponseDTO update(Long id, PostRequestDTO requestDTO) {
         PostEntity postEntity = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
 
-        if (postDto.getTitle() != null) {
-            postEntity.setTitle(postDto.getTitle());
+        if (requestDTO.getTitle() != null) {
+            postEntity.setTitle(requestDTO.getTitle());
         }
-        if (postDto.getContents() != null) {
-            postEntity.setContents(postDto.getContents());
+        if (requestDTO.getContents() != null) {
+            postEntity.setContents(requestDTO.getContents());
         }
+
+        return PostResponseDTO.fromEntity(postEntity);
     }
 
-    public PostDto findById(Long id) {
+    public PostResponseDTO findById(Long id) {
         PostEntity entity = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
-        return PostDto.fromEntity(entity);
+        return PostResponseDTO.fromEntity(entity);
     }
     public void delete(Long id) {
         PostEntity post = postRepository.findById(id)
